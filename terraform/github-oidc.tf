@@ -1,6 +1,11 @@
 # ---------------------------------------------------------------------------
 # GitHub Actions OIDC — keyless CI/CD authentication
 # ---------------------------------------------------------------------------
+locals {
+  github_owner     = split("/", var.github_repo)[0]
+  github_repo_name = split("/", var.github_repo)[1]
+}
+
 resource "aws_iam_openid_connect_provider" "github" {
   url            = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
@@ -26,11 +31,16 @@ data "aws_iam_policy_document" "github_trust" {
       values   = ["sts.amazonaws.com"]
     }
 
-    # Only pushes to the deploy branch of this repo may assume the role
+    # Only pushes to the deploy branch of this repo may assume the role.
+    # Accept both the legacy subject format and GitHub's immutable-subject
+    # format (owner/repo names suffixed with their numeric IDs).
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/${var.github_branch}"]
+      values = [
+        "repo:${var.github_repo}:ref:refs/heads/${var.github_branch}",
+        "repo:${local.github_owner}@${var.github_owner_id}/${local.github_repo_name}@${var.github_repo_id}:ref:refs/heads/${var.github_branch}",
+      ]
     }
   }
 }

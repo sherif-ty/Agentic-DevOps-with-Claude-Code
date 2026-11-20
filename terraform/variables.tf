@@ -33,3 +33,15 @@ variable "github_branch" {
   type        = string
   default     = "main"
 }
+
+variable "github_owner_id" {
+  description = "Numeric GitHub owner ID (used in immutable OIDC subject claims)"
+  type        = string
+  default     = "36302233"
+}
+
+variable "github_repo_id" {
+  description = "Numeric GitHub repository ID (used in immutable OIDC subject claims)"
+  type        = string
+  default     = "1462252506"
+}
