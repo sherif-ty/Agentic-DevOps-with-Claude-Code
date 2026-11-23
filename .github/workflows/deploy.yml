@@ -33,6 +33,8 @@ jobs:
             --exclude ".claude/*" \
             --exclude "terraform/*" \
             --exclude ".mcp.json" \
+            --exclude "mcp.json" \
+            --exclude "weather_flask_app-main/*" \
             --exclude "*.md" \
             --exclude "CLAUDE.md"
 

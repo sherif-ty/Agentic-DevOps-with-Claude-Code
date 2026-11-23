@@ -4,16 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Static HTML/CSS portfolio website deployed to AWS using S3 + CloudFront, provisioned with Terraform, and automated via GitHub Actions.
+Static weather web app (HTML/CSS/vanilla JS) deployed to AWS using S3 + CloudFront, provisioned with Terraform, and automated via GitHub Actions.
 
 ## Architecture
 
 ### Application (Static Site)
-- **index.html** — Single-page portfolio (About, Services, Courses, Books, Community, Contact)
-- **style.css** — All styling (~1145 lines), mobile-first responsive (breakpoints: 900px, 768px, 600px)
-- **privacy.html / terms.html** — Standalone pages with inline styles
-- **images/** — Static assets (logo, profile, course thumbnails, hero background)
-- Pure HTML5 + CSS3, no JavaScript, no build step
+- **index.html** — Single-page weather app: city search form + result card
+- **app.js** — Client-side logic: Open-Meteo geocoding API → forecast API (`current=` temperature, humidity, wind, WMO weather code), maps WMO codes to descriptions/emoji icons
+- **style.css** — All styling, responsive (breakpoint: 600px)
+- **images/** — Background images (`city_bg.jpg`, `city_bg2.jpg`)
+- No build step, no backend, no API key (Open-Meteo is keyless). Originally a Flask app, converted to static so it runs on S3/CloudFront.
+- Infra resource names still use the `portfolio-site` prefix (bucket, IAM role, state backend). Renaming would recreate the bucket and CloudFront distribution, so the names were left as they are.
 
 ### Infrastructure (`terraform/`)
 - AWS S3 bucket for static site hosting (private, OAC-based access)
