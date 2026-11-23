@@ -46,11 +46,10 @@ This project has 4 specialized subagents. Use them by name when delegating tasks
 
 ## Skills (`.claude/skills/`)
 
-All infrastructure and deployment tasks are handled via skills. Do not write Terraform or CI/CD code manually — use the appropriate skill. Action skills have `disable-model-invocation: true` (manual only). The `project-scope` skill has `user-invocable: false` (auto-loaded by Claude as background knowledge).
+All infrastructure and deployment tasks are handled via skills. Do not write Terraform or CI/CD code manually — use the appropriate skill. Action skills have `disable-model-invocation: true` (manual only).
 
 ```
 /scaffold-terraform [region] [name]  → Generate all Terraform files (uses tf-writer agent)
-/scaffold-cicd [aws-account-id]      → Generate GitHub Actions + OIDC IAM role
 /tf-plan                             → Run terraform plan + risk analysis
 /tf-apply                            → Run terraform apply + verify
 /deploy                              → Sync S3 + invalidate CloudFront
@@ -58,7 +57,6 @@ All infrastructure and deployment tasks are handled via skills. Do not write Ter
 /infra-audit                         → Parallel security + cost + drift audit (forked context)
 /setup-gh-actions [create|validate]  → Create or validate CI workflow
 /tf-destroy                          → Safe destroy with confirmation
-project-scope                        → Background knowledge: AWS service constraints (auto-loaded)
 /commit                              → Auto-generate commit message (built-in)
 /compact                             → Compress long conversation context (built-in)
 ```
@@ -78,7 +76,7 @@ open index.html
 aws s3 sync . s3://$BUCKET_NAME --exclude "terraform/*" --exclude ".git/*" --exclude ".github/*" --exclude "*.md" --exclude ".claude/*"
 ```
 
-## Safety Layers
+## Safety Layers (planned — hooks and permissions are NOT yet configured in this repo; do not rely on them)
 1. **UserPromptSubmit hook** — catches destructive intent ("delete all", "nuke", "wipe") before Claude starts
 2. **PreToolUse hook** — blocks dangerous commands (terraform destroy, aws s3 rm) at execution time
 3. **Permissions** — auto-allows safe reads, blocks IAM and rm -rf
